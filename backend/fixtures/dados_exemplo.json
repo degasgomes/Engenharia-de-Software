@@ -1,0 +1,42 @@
+[
+  {"model": "contas.utilizador", "pk": 1, "fields": {
+    "nome": "Tiago Gestor", "email": "tiago@exemplo.pt", "perfil": "GESTOR_PRODUTO",
+    "capacidade_sp": 20, "is_staff": true, "is_superuser": true, "is_active": true,
+    "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$NDNxNjh6Vm9vRzFuTEF2RzhkU1FYbQ$Gz+erSHWAdnAX97dzLxyLvaS9qL6NaWwyVcRKpMGrN0"}},
+  {"model": "contas.utilizador", "pk": 2, "fields": {
+    "nome": "Sofia Cliente", "email": "sofia@exemplo.pt", "perfil": "CLIENTE",
+    "is_staff": false, "is_superuser": false, "is_active": true,
+    "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$bWg1R3dacHM5Z3NiMEhDYU5TREUyMw$D+kn9egbZ5ReoF8/telfta0MFU5iDzezGmw0+wQpPBo"}},
+  {"model": "contas.utilizador", "pk": 3, "fields": {
+    "nome": "João Cliente", "email": "joao@exemplo.pt", "perfil": "CLIENTE",
+    "is_staff": false, "is_superuser": false, "is_active": true,
+    "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$bWg1R3dacHM5Z3NiMEhDYU5TREUyMw$D+kn9egbZ5ReoF8/telfta0MFU5iDzezGmw0+wQpPBo"}},
+
+  {"model": "pedidos.categoria", "pk": 1, "fields": {"nome": "Relatórios"}},
+  {"model": "pedidos.categoria", "pk": 2, "fields": {"nome": "Integrações"}},
+  {"model": "pedidos.categoria", "pk": 3, "fields": {"nome": "Usabilidade"}},
+
+  {"model": "pedidos.pedido", "pk": 1, "fields": {
+    "autor": 2, "categoria": 1, "titulo": "Exportar relatórios para Excel",
+    "problema": "Todas as semanas copiamos os números à mão para enviar à direção.",
+    "estado": "SUBMETIDO", "data_submissao": "2026-10-26T10:00:00Z"}},
+  {"model": "pedidos.pedido", "pk": 2, "fields": {
+    "autor": 3, "categoria": 2, "titulo": "Integração com o Slack",
+    "problema": "Perdemos avisos importantes porque só chegam por e-mail.",
+    "estado": "SUBMETIDO", "esforco": 3, "impacto": 4, "data_submissao": "2026-10-27T09:30:00Z"}},
+  {"model": "pedidos.pedido", "pk": 3, "fields": {
+    "autor": 2, "categoria": 3, "titulo": "Modo escuro",
+    "problema": "Quem trabalha à noite queixa-se do brilho do ecrã.",
+    "estado": "APROVADO", "esforco": 2, "impacto": 3, "data_submissao": "2026-10-20T15:00:00Z"}},
+  {"model": "pedidos.pedido", "pk": 4, "fields": {
+    "autor": 3, "titulo": "Exportar para disquete",
+    "problema": "O nosso sistema antigo só lê disquetes.",
+    "estado": "REJEITADO", "esforco": 5, "impacto": 1,
+    "justificacao_rejeicao": "Formato descontinuado; sugerimos a exportação em CSV.",
+    "data_submissao": "2026-10-19T11:00:00Z"}},
+
+  {"model": "priorizacao.voto", "pk": 1, "fields": {"utilizador": 2, "pedido": 2, "data": "2026-10-27T10:00:00Z"}},
+  {"model": "priorizacao.voto", "pk": 2, "fields": {"utilizador": 3, "pedido": 1, "data": "2026-10-27T11:00:00Z"}},
+  {"model": "priorizacao.voto", "pk": 3, "fields": {"utilizador": 2, "pedido": 3, "data": "2026-10-21T09:00:00Z"}},
+  {"model": "priorizacao.voto", "pk": 4, "fields": {"utilizador": 3, "pedido": 3, "data": "2026-10-21T09:05:00Z"}}
+]

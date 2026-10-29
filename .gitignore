@@ -150,3 +150,15 @@ vite.config.ts.timestamp-*
 node_modules/
 .env
 dist/
+
+# Python / Django (Mini Sprint 3)
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+backend/db.sqlite3
+backend/media/
+frontend/dist/
+.DS_Store
+.claude/

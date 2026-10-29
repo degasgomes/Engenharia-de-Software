@@ -1,7 +1,17 @@
-import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+// Em docker compose o back-end chama-se "backend"; fora dele, localhost.
+const alvo = process.env.VITE_API_PROXY || 'http://localhost:8000'
+
 export default defineConfig({
   plugins: [react()],
+  server: {
+    host: true,
+    port: 5173,
+    proxy: {
+      '/api': alvo,
+      '/media': alvo,
+    },
+  },
 })

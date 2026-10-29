@@ -1,122 +1,72 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
+import { useSessao } from './sessao.jsx'
+import Entrar from './pages/Entrar.jsx'
+import Dashboard from './pages/Dashboard.jsx'
+import ListaPedidos from './pages/ListaPedidos.jsx'
+import SubmeterPedido from './pages/SubmeterPedido.jsx'
+import DetalhePedido from './pages/DetalhePedido.jsx'
+import Priorizacao from './pages/Priorizacao.jsx'
+import EmBreve from './pages/EmBreve.jsx'
 
-function App() {
-  const [count, setCount] = useState(0)
+const NOMES_PERFIL = { CLIENTE: 'Cliente', GESTOR_PRODUTO: 'Gestor de Produto' }
 
+// Os ecrãs dos wireframes que dependem de módulos dos Sprints 4 e 5.
+const FUTUROS = [
+  { caminho: '/backlog', titulo: 'Backlog e Sprint', sprint: 4 },
+  { caminho: '/roadmap', titulo: 'Roadmap', sprint: 4 },
+  { caminho: '/user-stories', titulo: 'User Stories', sprint: 4 },
+  { caminho: '/equipas', titulo: 'Equipas', sprint: 5 },
+  { caminho: '/notificacoes', titulo: 'Notificações', sprint: 4 },
+]
+
+function MenuLateral() {
+  const { utilizador } = useSessao()
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <aside className="lateral">
+      <NavLink to="/" className="marca">FeatureFlow</NavLink>
+      <nav>
+        <NavLink to="/" end>Dashboard</NavLink>
+        <NavLink to="/pedidos">Pedidos</NavLink>
+        <NavLink to="/priorizacao">Priorização</NavLink>
+        {FUTUROS.map((f) => (
+          <NavLink key={f.caminho} to={f.caminho} className="futuro">{f.titulo}</NavLink>
+        ))}
+      </nav>
+      <div className="perfil">
+        <strong>{utilizador.nome}</strong>
+        <span>{NOMES_PERFIL[utilizador.perfil] ?? utilizador.perfil}</span>
+      </div>
+    </aside>
   )
 }
 
-export default App
+export default function App() {
+  const { utilizador, aCarregar } = useSessao()
+
+  if (aCarregar) return <p className="info centrado">A carregar…</p>
+  if (!utilizador) {
+    return (
+      <Routes>
+        <Route path="/entrar" element={<Entrar />} />
+        <Route path="*" element={<Navigate to="/entrar" replace />} />
+      </Routes>
+    )
+  }
+
+  return (
+    <div className="app">
+      <MenuLateral />
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/pedidos" element={<ListaPedidos />} />
+        <Route path="/pedidos/novo" element={<SubmeterPedido />} />
+        <Route path="/pedidos/:id" element={<DetalhePedido />} />
+        <Route path="/priorizacao" element={<Priorizacao />} />
+        {FUTUROS.map((f) => (
+          <Route key={f.caminho} path={f.caminho} element={<EmBreve titulo={f.titulo} sprint={f.sprint} />} />
+        ))}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
+  )
+}
