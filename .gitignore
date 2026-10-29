@@ -161,4 +161,7 @@ backend/db.sqlite3
 backend/media/
 frontend/dist/
 .DS_Store
+# Claude Code
 .claude/
+CLAUDE.md
+CLAUDE.local.md
