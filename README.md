@@ -40,7 +40,6 @@ backend/            Django + DRF (monólito modular, EDS-10)
 frontend/           React + Vite
   src/api.js        módulo único de pedidos à API
   src/pages/        Entrar, SubmeterPedido, ListaPedidos, DetalhePedido
-docs/               artefactos dos sprints anteriores e ADR-008
 ```
 
 ## API (`/api/v1/`)

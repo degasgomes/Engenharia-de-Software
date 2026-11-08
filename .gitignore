@@ -169,3 +169,6 @@ CLAUDE.local.md
 # Cobertura de testes (pytest-cov)
 .coverage
 htmlcov/
+
+# Documentos ficam fora do repositório (só código)
+docs/
