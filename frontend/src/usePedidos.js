@@ -19,7 +19,7 @@ export function usePedidos() {
     async (pedido) => {
       setAVotar(pedido.id)
       try {
-        substituir(await api.votar(pedido.id))
+        substituir(await api.alternarVoto(pedido))
       } catch (err) {
         setErro(err)
       } finally {

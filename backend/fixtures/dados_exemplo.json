@@ -19,11 +19,11 @@
   {"model": "pedidos.pedido", "pk": 1, "fields": {
     "autor": 2, "categoria": 1, "titulo": "Exportar relatórios para Excel",
     "problema": "Todas as semanas copiamos os números à mão para enviar à direção.",
-    "estado": "SUBMETIDO", "data_submissao": "2026-10-26T10:00:00Z"}},
+    "estado": "EM_TRIAGEM", "data_submissao": "2026-10-26T10:00:00Z"}},
   {"model": "pedidos.pedido", "pk": 2, "fields": {
     "autor": 3, "categoria": 2, "titulo": "Integração com o Slack",
     "problema": "Perdemos avisos importantes porque só chegam por e-mail.",
-    "estado": "SUBMETIDO", "esforco": 3, "impacto": 4, "data_submissao": "2026-10-27T09:30:00Z"}},
+    "estado": "EM_TRIAGEM", "esforco": 3, "impacto": 4, "data_submissao": "2026-10-27T09:30:00Z"}},
   {"model": "pedidos.pedido", "pk": 3, "fields": {
     "autor": 2, "categoria": 3, "titulo": "Modo escuro",
     "problema": "Quem trabalha à noite queixa-se do brilho do ecrã.",
@@ -35,8 +35,8 @@
     "justificacao_rejeicao": "Formato descontinuado; sugerimos a exportação em CSV.",
     "data_submissao": "2026-10-19T11:00:00Z"}},
 
-  {"model": "priorizacao.voto", "pk": 1, "fields": {"utilizador": 2, "pedido": 2, "data": "2026-10-27T10:00:00Z"}},
-  {"model": "priorizacao.voto", "pk": 2, "fields": {"utilizador": 3, "pedido": 1, "data": "2026-10-27T11:00:00Z"}},
-  {"model": "priorizacao.voto", "pk": 3, "fields": {"utilizador": 2, "pedido": 3, "data": "2026-10-21T09:00:00Z"}},
-  {"model": "priorizacao.voto", "pk": 4, "fields": {"utilizador": 3, "pedido": 3, "data": "2026-10-21T09:05:00Z"}}
+  {"model": "priorizacao.voto", "fields": {"utilizador": 2, "pedido": 2, "data": "2026-10-27T10:00:00Z"}},
+  {"model": "priorizacao.voto", "fields": {"utilizador": 3, "pedido": 1, "data": "2026-10-27T11:00:00Z"}},
+  {"model": "priorizacao.voto", "fields": {"utilizador": 2, "pedido": 3, "data": "2026-10-21T09:00:00Z"}},
+  {"model": "priorizacao.voto", "fields": {"utilizador": 3, "pedido": 3, "data": "2026-10-21T09:05:00Z"}}
 ]

@@ -165,3 +165,7 @@ frontend/dist/
 .claude/
 CLAUDE.md
 CLAUDE.local.md
+
+# Cobertura de testes (pytest-cov)
+.coverage
+htmlcov/

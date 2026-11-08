@@ -108,6 +108,9 @@ export function submeterPedido({ titulo, problema, categoria, anexo }) {
 export const votar = (id) => pedir(`/pedidos/${id}/votos`, { method: 'POST' })
 export const retirarVoto = (id) => pedir(`/pedidos/${id}/votos`, { method: 'DELETE' })
 
+// Diagrama de Sequência 3: POST se ainda não votou, DELETE se já tinha votado.
+export const alternarVoto = (pedido) => (pedido.votado ? retirarVoto(pedido.id) : votar(pedido.id))
+
 export const avaliarPedido = (id, esforco, impacto) =>
   pedir(`/pedidos/${id}`, { method: 'PATCH', json: { esforco, impacto } })
 export const aprovarPedido = (id) => pedir(`/pedidos/${id}/aprovar`, { method: 'POST' })

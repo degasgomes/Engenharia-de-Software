@@ -17,16 +17,19 @@ avalia e aprova esse pedido; tudo a arrancar com `docker compose up`.
 
 ## Decisões tomadas durante a implementação
 
-- **Aprovar a partir de SUBMETIDO.** No Diagrama de Estados 1 a aprovação parte de
-  EM_TRIAGEM, que só é atingido quando o Worker conclui a triagem com IA (Sprint 5). Até lá,
-  `aprovar()` e `rejeitar()` aceitam pedidos em SUBMETIDO ou EM_TRIAGEM
-  (`ESTADOS_EM_AVALIACAO` em `pedidos/models.py`). Atualizar o diagrama ou esta regra quando
-  o Worker existir.
-- **Voto com `id` próprio e restrição única** `(utilizador, pedido)`, como pede o guião,
-  em vez da chave primária composta do EDS-14: o Django admin e os fixtures não suportam
-  bem chaves compostas. A regra "um voto por utilizador e pedido" continua garantida pela
-  base de dados.
-- **POST `/votos` alterna**: votar de novo retira o voto (guião 5.3); DELETE também retira.
+- **Triagem logo após a submissão.** No Diagrama de Estados 1 só se aprova ou rejeita a partir de
+  EM_TRIAGEM, e no Diagrama de Sequência 1 é o Worker que conclui a triagem e envia o e-mail de
+  confirmação. Enquanto o Worker não existe (Sprint 4), `pedidos/services.py` faz as duas coisas
+  logo a seguir à submissão: envia o e-mail (caso de uso «include» do EDS-12) e conclui a triagem
+  sem sugestões da IA (Submetido → Em Triagem). `aprovar()` e `rejeitar()` só aceitam EM_TRIAGEM.
+- **Voto com chave primária composta** `(utilizador_id, pedido_id)`, como no EDS-14
+  (`models.CompositePrimaryKey`, Django 5.2). Garante a restrição única pedida no guião. O Voto não
+  aparece no admin do Django, que não suporta chaves compostas.
+- **POST `/votos` insere, DELETE retira**, como no Diagrama de Sequência 3: POST responde
+  201 Created (200 se o voto já existia) e DELETE 200 OK. A aplicação envia um ou outro
+  consoante o utilizador já tenha votado, por isso clicar de novo retira o voto (guião 5.3).
+- **Votação fechada** em pedidos REJEITADO ou LANCADO: votar ou retirar o voto devolve 403, como no
+  Diagrama de Sequência 3 (`Pedido.aceita_votos`, `priorizacao/services.py`); o botão fica desativado.
 - **Esforço e impacto numa escala de 1 a 5** (pronta para a matriz Esforço vs. Impacto).
 - **Registo público cria só Clientes**: impede que alguém se registe como Gestor.
 - **Palavras-passe com Argon2** (RNF-03); a coluna chama-se `password_hash` como no EDS-14.

@@ -120,3 +120,11 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Feature Request & Product Roadmap API",
     "VERSION": "1.0.0",
 }
+
+# E-mail de confirmação da submissão (EDS-12). Em desenvolvimento aparece na consola do backend.
+EMAIL_BACKEND = os.environ.get(
+    "DJANGO_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+)
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DJANGO_DEFAULT_FROM_EMAIL", "FeatureFlow <nao-responder@featureflow.local>"
+)

@@ -6,7 +6,8 @@ import Estimativa from '../Estimativa.jsx'
 import { BotaoVoto, Erro, Estado, Pagina } from '../components.jsx'
 import { codigoPedido, NIVEL, score, tempoRelativo } from '../formatos.js'
 
-const EM_AVALIACAO = ['SUBMETIDO', 'EM_TRIAGEM']
+// Diagrama de Estados 1: o Gestor só decide depois da triagem.
+const EM_AVALIACAO = ['EM_TRIAGEM']
 const SEPARADORES = {
   descricao: 'Descrição',
   historico: 'Histórico de versões',
@@ -62,7 +63,7 @@ export default function DetalhePedido() {
       {state?.acabadoDeSubmeter && <p className="sucesso">Pedido submetido com sucesso.</p>}
 
       <section className="cartao cabecalho-pedido">
-        <BotaoVoto pedido={pedido} aoVotar={() => executar(() => api.votar(pedido.id))} ocupado={ocupado} />
+        <BotaoVoto pedido={pedido} aoVotar={() => executar(() => api.alternarVoto(pedido))} ocupado={ocupado} />
         <div className="resumo">
           <span className="suave codigo">{codigoPedido(pedido.id)}</span>
           <h2 className="titulo-pedido">{pedido.titulo}</h2>

@@ -2,7 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 
 from contas.models import Perfil, Utilizador
-from pedidos.models import Pedido
+from pedidos.models import EstadoPedido, Pedido
 
 
 @pytest.fixture(autouse=True)
@@ -43,6 +43,10 @@ def como(api):
 
 @pytest.fixture
 def pedido(cliente):
+    """Um pedido que já passou pela triagem, pronto para o Gestor decidir."""
     return Pedido.objects.create(
-        autor=cliente, titulo="Exportar relatórios", problema="Hoje copiamos à mão para Excel."
+        autor=cliente,
+        titulo="Exportar relatórios",
+        problema="Hoje copiamos à mão para Excel.",
+        estado=EstadoPedido.EM_TRIAGEM,
     )

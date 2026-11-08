@@ -26,6 +26,7 @@ class PedidoSerializer(serializers.ModelSerializer):
     estado_display = serializers.CharField(source="get_estado_display", read_only=True)
     total_votos = serializers.IntegerField(read_only=True)
     votado = serializers.BooleanField(read_only=True)
+    aceita_votos = serializers.BooleanField(read_only=True)
     anexos = AnexoSerializer(many=True, read_only=True)
 
     class Meta:
@@ -46,6 +47,7 @@ class PedidoSerializer(serializers.ModelSerializer):
             "categoria_id",
             "total_votos",
             "votado",
+            "aceita_votos",
             "anexos",
         ]
         read_only_fields = fields

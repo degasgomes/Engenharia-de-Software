@@ -6,7 +6,8 @@ import Estimativa from '../Estimativa.jsx'
 import { Erro, Estado, Pagina } from '../components.jsx'
 import { codigoPedido, score } from '../formatos.js'
 
-const EM_AVALIACAO = ['SUBMETIDO', 'EM_TRIAGEM']
+// Diagrama de Estados 1: o Gestor só decide depois da triagem.
+const EM_AVALIACAO = ['EM_TRIAGEM']
 
 // Posição de 1–5 dentro da matriz, com margem para os pontos não ficarem na borda.
 const posicao = (valor) => `${8 + ((valor - 1) / 4) * 84}%`

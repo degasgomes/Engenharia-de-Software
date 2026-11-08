@@ -34,7 +34,7 @@ backend/            Django + DRF (monólito modular, EDS-10)
   config/           settings e URLs (/api/v1/)
   contas/           Utilizador, Perfil, registo, JWT, permissões por perfil
   pedidos/          Pedido, Categoria, Anexo, EstadoPedido, aprovar()/rejeitar()
-  priorizacao/      Voto (único por utilizador e pedido), serviços votar/avaliar
+  priorizacao/      Voto (PK composta utilizador+pedido), serviços votar/avaliar
   fixtures/         dados de exemplo (loaddata)
   tests/            pytest
 frontend/           React + Vite
@@ -56,7 +56,7 @@ docs/               artefactos dos sprints anteriores e ADR-008
 | PATCH | `/pedidos/{id}` | Gestor | `esforco` e `impacto` (1–5) |
 | POST | `/pedidos/{id}/aprovar` | Gestor | falha sem esforço e impacto |
 | POST | `/pedidos/{id}/rejeitar` | Gestor | `justificacao` obrigatória |
-| POST / DELETE | `/pedidos/{id}/votos` | autenticado | POST alterna (votar de novo retira), DELETE retira |
+| POST / DELETE | `/pedidos/{id}/votos` | autenticado | POST vota (201), DELETE retira (200) |
 
 ## Testes e lint (sem Docker)
 

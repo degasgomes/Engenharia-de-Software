@@ -14,11 +14,13 @@ class EstadoPedido(models.TextChoices):
     LANCADO = "LANCADO", "Lançado"
 
 
-# Enquanto a triagem pelo Worker não existe (Sprint 5), o Gestor decide também sobre
-# pedidos ainda em SUBMETIDO.
-ESTADOS_EM_AVALIACAO = (EstadoPedido.SUBMETIDO, EstadoPedido.EM_TRIAGEM)
+# Diagrama de Estados 1: o Gestor só aprova ou rejeita depois da triagem.
+ESTADOS_EM_AVALIACAO = (EstadoPedido.EM_TRIAGEM,)
 
 ESCALA_1_A_5 = [MinValueValidator(1), MaxValueValidator(5)]
+
+# Diagrama de Sequência 3: num pedido terminado já não se vota nem se retira o voto.
+ESTADOS_VOTACAO_FECHADA = (EstadoPedido.REJEITADO, EstadoPedido.LANCADO)
 
 
 class TransicaoInvalida(Exception):
@@ -63,6 +65,14 @@ class Pedido(models.Model):
     def __str__(self):
         return self.titulo
 
+    def concluir_triagem(self, sugestoes=None):
+        """Submetido → Em Triagem, com ou sem sugestões da IA (Diagrama de Estados 1)."""
+        if self.estado != EstadoPedido.SUBMETIDO:
+            raise TransicaoInvalida(f"Um pedido {self.get_estado_display()} já foi triado.")
+        self.sugestoes_ia = sugestoes
+        self.estado = EstadoPedido.EM_TRIAGEM
+        self.save(update_fields=["estado", "sugestoes_ia"])
+
     def aprovar(self):
         if self.estado not in ESTADOS_EM_AVALIACAO:
             raise TransicaoInvalida(f"Um pedido {self.get_estado_display()} não pode ser aprovado.")
@@ -81,6 +91,10 @@ class Pedido(models.Model):
         self.estado = EstadoPedido.REJEITADO
         self.justificacao_rejeicao = justificacao.strip()
         self.save(update_fields=["estado", "justificacao_rejeicao"])
+
+    @property
+    def aceita_votos(self):
+        return self.estado not in ESTADOS_VOTACAO_FECHADA
 
     def total_votos(self):
         return self.votos.count()

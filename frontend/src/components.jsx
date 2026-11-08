@@ -26,9 +26,13 @@ export function BotaoVoto({ pedido, aoVotar, ocupado }) {
     <button
       className={pedido.votado ? 'voto votado' : 'voto'}
       onClick={() => aoVotar(pedido)}
-      disabled={ocupado}
+      disabled={ocupado || !pedido.aceita_votos}
       aria-pressed={pedido.votado}
-      title={pedido.votado ? 'Retirar voto' : 'Votar'}
+      title={
+        !pedido.aceita_votos
+          ? 'Este pedido já não aceita alterações de votos'
+          : pedido.votado ? 'Retirar voto' : 'Votar'
+      }
     >
       ▲ {pedido.total_votos}
     </button>

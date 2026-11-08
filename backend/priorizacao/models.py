@@ -4,6 +4,9 @@ from django.utils import timezone
 
 
 class Voto(models.Model):
+    # EDS-14: chave primária composta (utilizador_id, pedido_id), ou seja,
+    # um voto por utilizador e pedido (US 2.2), garantido pela própria base de dados.
+    pk = models.CompositePrimaryKey("utilizador", "pedido")
     utilizador = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="votos"
     )
@@ -12,10 +15,6 @@ class Voto(models.Model):
 
     class Meta:
         db_table = "voto"
-        constraints = [
-            # US 2.2: um voto por utilizador e pedido
-            models.UniqueConstraint(fields=["utilizador", "pedido"], name="voto_unico"),
-        ]
 
     def __str__(self):
         return f"{self.utilizador} → {self.pedido}"

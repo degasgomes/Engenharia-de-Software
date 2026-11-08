@@ -1,7 +1,7 @@
 from django.db.models import Count, Exists, OuterRef
 from rest_framework import generics, mixins, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 
@@ -9,6 +9,7 @@ from contas.permissions import EGestorProduto
 from priorizacao import services as priorizacao
 from priorizacao.models import Voto
 
+from . import services
 from .models import Categoria, Pedido, TransicaoInvalida
 from .serializers import (
     AvaliacaoSerializer,
@@ -36,7 +37,10 @@ class PedidoViewSet(
         return (
             Pedido.objects.select_related("autor", "categoria")
             .prefetch_related("anexos")
-            .annotate(total_votos=Count("votos", distinct=True), votado=Exists(votos_do_utilizador))
+            .annotate(
+                total_votos=Count("votos__utilizador", distinct=True),
+                votado=Exists(votos_do_utilizador),
+            )
             .order_by("-total_votos", "-data_submissao")
         )
 
@@ -62,6 +66,7 @@ class PedidoViewSet(
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         pedido = serializer.save()
+        services.processar_submissao(pedido)
         return self._resposta(pedido, status.HTTP_201_CREATED)
 
     def partial_update(self, request, *args, **kwargs):
@@ -94,11 +99,18 @@ class PedidoViewSet(
     @action(detail=True, methods=["post", "delete"])
     def votos(self, request, pk=None):
         pedido = self.get_object()
-        if request.method == "POST":
-            priorizacao.votar(request.user, pedido)
-        else:
-            priorizacao.retirar_voto(request.user, pedido)
-        return self._resposta(pedido)
+        # Diagrama de Sequência 3: POST insere o voto (201 Created se for novo),
+        # DELETE retira-o (200 OK); ambos devolvem o pedido com o novo total.
+        codigo = status.HTTP_200_OK
+        try:
+            if request.method == "POST":
+                if priorizacao.votar(request.user, pedido):
+                    codigo = status.HTTP_201_CREATED
+            else:
+                priorizacao.retirar_voto(request.user, pedido)
+        except priorizacao.VotacaoFechada as erro:
+            raise PermissionDenied(str(erro)) from erro
+        return self._resposta(pedido, codigo)
 
 
 class CategoriaListView(generics.ListAPIView):
