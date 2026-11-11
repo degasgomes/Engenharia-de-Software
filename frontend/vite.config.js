@@ -6,6 +6,12 @@ const alvo = process.env.VITE_API_PROXY || 'http://localhost:8000'
 
 export default defineConfig({
   plugins: [react()],
+  // Vitest: testes dos módulos e dos ecrãs com o DOM simulado (jsdom).
+  test: {
+    environment: 'jsdom',
+    setupFiles: './src/testes/preparar.js',
+    restoreMocks: true,
+  },
   server: {
     host: true,
     port: 5173,

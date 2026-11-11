@@ -1,42 +1,307 @@
 [
-  {"model": "contas.utilizador", "pk": 1, "fields": {
-    "nome": "Tiago Gestor", "email": "tiago@exemplo.pt", "perfil": "GESTOR_PRODUTO",
-    "capacidade_sp": 20, "is_staff": true, "is_superuser": true, "is_active": true,
-    "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$NDNxNjh6Vm9vRzFuTEF2RzhkU1FYbQ$Gz+erSHWAdnAX97dzLxyLvaS9qL6NaWwyVcRKpMGrN0"}},
-  {"model": "contas.utilizador", "pk": 2, "fields": {
-    "nome": "Sofia Cliente", "email": "sofia@exemplo.pt", "perfil": "CLIENTE",
-    "is_staff": false, "is_superuser": false, "is_active": true,
-    "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$bWg1R3dacHM5Z3NiMEhDYU5TREUyMw$D+kn9egbZ5ReoF8/telfta0MFU5iDzezGmw0+wQpPBo"}},
-  {"model": "contas.utilizador", "pk": 3, "fields": {
-    "nome": "João Cliente", "email": "joao@exemplo.pt", "perfil": "CLIENTE",
-    "is_staff": false, "is_superuser": false, "is_active": true,
-    "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$bWg1R3dacHM5Z3NiMEhDYU5TREUyMw$D+kn9egbZ5ReoF8/telfta0MFU5iDzezGmw0+wQpPBo"}},
-
-  {"model": "pedidos.categoria", "pk": 1, "fields": {"nome": "Relatórios"}},
-  {"model": "pedidos.categoria", "pk": 2, "fields": {"nome": "Integrações"}},
-  {"model": "pedidos.categoria", "pk": 3, "fields": {"nome": "Usabilidade"}},
-
-  {"model": "pedidos.pedido", "pk": 1, "fields": {
-    "autor": 2, "categoria": 1, "titulo": "Exportar relatórios para Excel",
-    "problema": "Todas as semanas copiamos os números à mão para enviar à direção.",
-    "estado": "EM_TRIAGEM", "data_submissao": "2026-10-26T10:00:00Z"}},
-  {"model": "pedidos.pedido", "pk": 2, "fields": {
-    "autor": 3, "categoria": 2, "titulo": "Integração com o Slack",
-    "problema": "Perdemos avisos importantes porque só chegam por e-mail.",
-    "estado": "EM_TRIAGEM", "esforco": 3, "impacto": 4, "data_submissao": "2026-10-27T09:30:00Z"}},
-  {"model": "pedidos.pedido", "pk": 3, "fields": {
-    "autor": 2, "categoria": 3, "titulo": "Modo escuro",
-    "problema": "Quem trabalha à noite queixa-se do brilho do ecrã.",
-    "estado": "APROVADO", "esforco": 2, "impacto": 3, "data_submissao": "2026-10-20T15:00:00Z"}},
-  {"model": "pedidos.pedido", "pk": 4, "fields": {
-    "autor": 3, "titulo": "Exportar para disquete",
-    "problema": "O nosso sistema antigo só lê disquetes.",
-    "estado": "REJEITADO", "esforco": 5, "impacto": 1,
-    "justificacao_rejeicao": "Formato descontinuado; sugerimos a exportação em CSV.",
-    "data_submissao": "2026-10-19T11:00:00Z"}},
-
-  {"model": "priorizacao.voto", "fields": {"utilizador": 2, "pedido": 2, "data": "2026-10-27T10:00:00Z"}},
-  {"model": "priorizacao.voto", "fields": {"utilizador": 3, "pedido": 1, "data": "2026-10-27T11:00:00Z"}},
-  {"model": "priorizacao.voto", "fields": {"utilizador": 2, "pedido": 3, "data": "2026-10-21T09:00:00Z"}},
-  {"model": "priorizacao.voto", "fields": {"utilizador": 3, "pedido": 3, "data": "2026-10-21T09:05:00Z"}}
+  {
+    "model": "contas.utilizador",
+    "pk": 1,
+    "fields": {
+      "nome": "Tiago Gestor",
+      "email": "tiago@exemplo.pt",
+      "perfil": "GESTOR_PRODUTO",
+      "capacidade_sp": 20,
+      "is_staff": true,
+      "is_superuser": true,
+      "is_active": true,
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$NDNxNjh6Vm9vRzFuTEF2RzhkU1FYbQ$Gz+erSHWAdnAX97dzLxyLvaS9qL6NaWwyVcRKpMGrN0"
+    }
+  },
+  {
+    "model": "contas.utilizador",
+    "pk": 2,
+    "fields": {
+      "nome": "Sofia Cliente",
+      "email": "sofia@exemplo.pt",
+      "perfil": "CLIENTE",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$bWg1R3dacHM5Z3NiMEhDYU5TREUyMw$D+kn9egbZ5ReoF8/telfta0MFU5iDzezGmw0+wQpPBo"
+    }
+  },
+  {
+    "model": "contas.utilizador",
+    "pk": 3,
+    "fields": {
+      "nome": "João Cliente",
+      "email": "joao@exemplo.pt",
+      "perfil": "CLIENTE",
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true,
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$bWg1R3dacHM5Z3NiMEhDYU5TREUyMw$D+kn9egbZ5ReoF8/telfta0MFU5iDzezGmw0+wQpPBo"
+    }
+  },
+  {
+    "model": "contas.utilizador",
+    "pk": 4,
+    "fields": {
+      "nome": "Inês Projeto",
+      "email": "ines@exemplo.pt",
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$dDc2bDNNT2NpcUtONlFqZUUwU3U1cQ$bRPXo954lws1gsQto/OcwLoCWOKAcZKRfDohxd3MB7I",
+      "perfil": "GESTOR_PROJETO",
+      "capacidade_sp": 20,
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "contas.utilizador",
+    "pk": 5,
+    "fields": {
+      "nome": "Rui Programador",
+      "email": "rui@exemplo.pt",
+      "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$dDc2bDNNT2NpcUtONlFqZUUwU3U1cQ$bRPXo954lws1gsQto/OcwLoCWOKAcZKRfDohxd3MB7I",
+      "perfil": "PROGRAMADOR",
+      "capacidade_sp": 20,
+      "is_staff": false,
+      "is_superuser": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "contas.equipa",
+    "pk": 1,
+    "fields": {
+      "nome": "Equipa Alfa",
+      "membros": [
+        1,
+        4,
+        5
+      ]
+    }
+  },
+  {
+    "model": "roadmap.release",
+    "pk": 1,
+    "fields": {
+      "nome": "v1.1",
+      "data_prevista": "2026-12-04",
+      "data_publicacao": null
+    }
+  },
+  {
+    "model": "roadmap.milestone",
+    "pk": 1,
+    "fields": {
+      "release": 1,
+      "nome": "Beta para clientes",
+      "data": "2026-11-27"
+    }
+  },
+  {
+    "model": "roadmap.release",
+    "pk": 2,
+    "fields": {
+      "nome": "v1.2",
+      "data_prevista": "2027-01-15",
+      "data_publicacao": null
+    }
+  },
+  {
+    "model": "pedidos.categoria",
+    "pk": 1,
+    "fields": {
+      "nome": "Relatórios"
+    }
+  },
+  {
+    "model": "pedidos.categoria",
+    "pk": 2,
+    "fields": {
+      "nome": "Integrações"
+    }
+  },
+  {
+    "model": "pedidos.categoria",
+    "pk": 3,
+    "fields": {
+      "nome": "Usabilidade"
+    }
+  },
+  {
+    "model": "pedidos.pedido",
+    "pk": 1,
+    "fields": {
+      "autor": 2,
+      "categoria": 1,
+      "titulo": "Exportar relatórios para Excel",
+      "problema": "Todas as semanas copiamos os números à mão para enviar à direção.",
+      "estado": "EM_TRIAGEM",
+      "data_submissao": "2026-10-26T10:00:00Z"
+    }
+  },
+  {
+    "model": "pedidos.pedido",
+    "pk": 2,
+    "fields": {
+      "autor": 3,
+      "categoria": 2,
+      "titulo": "Integração com o Slack",
+      "problema": "Perdemos avisos importantes porque só chegam por e-mail.",
+      "estado": "EM_TRIAGEM",
+      "esforco": 3,
+      "impacto": 4,
+      "data_submissao": "2026-10-27T09:30:00Z"
+    }
+  },
+  {
+    "model": "pedidos.pedido",
+    "pk": 3,
+    "fields": {
+      "autor": 2,
+      "categoria": 3,
+      "titulo": "Modo escuro",
+      "problema": "Quem trabalha à noite queixa-se do brilho do ecrã.",
+      "estado": "APROVADO",
+      "esforco": 2,
+      "impacto": 3,
+      "data_submissao": "2026-10-20T15:00:00Z"
+    }
+  },
+  {
+    "model": "pedidos.pedido",
+    "pk": 4,
+    "fields": {
+      "autor": 3,
+      "titulo": "Exportar para disquete",
+      "problema": "O nosso sistema antigo só lê disquetes.",
+      "estado": "REJEITADO",
+      "esforco": 5,
+      "impacto": 1,
+      "justificacao_rejeicao": "Formato descontinuado; sugerimos a exportação em CSV.",
+      "data_submissao": "2026-10-19T11:00:00Z"
+    }
+  },
+  {
+    "model": "pedidos.pedido",
+    "pk": 5,
+    "fields": {
+      "autor": 3,
+      "categoria": 1,
+      "release": 1,
+      "titulo": "Agendar o envio de relatórios",
+      "problema": "Todas as segundas-feiras alguém tem de se lembrar de enviar o relatório semanal à direção.",
+      "estado": "PLANEADO",
+      "esforco": 3,
+      "impacto": 5,
+      "data_submissao": "2026-10-22T09:00:00Z"
+    }
+  },
+  {
+    "model": "priorizacao.voto",
+    "fields": {
+      "utilizador": 2,
+      "pedido": 2,
+      "data": "2026-10-27T10:00:00Z"
+    }
+  },
+  {
+    "model": "priorizacao.voto",
+    "fields": {
+      "utilizador": 3,
+      "pedido": 1,
+      "data": "2026-10-27T11:00:00Z"
+    }
+  },
+  {
+    "model": "priorizacao.voto",
+    "fields": {
+      "utilizador": 2,
+      "pedido": 3,
+      "data": "2026-10-21T09:00:00Z"
+    }
+  },
+  {
+    "model": "priorizacao.voto",
+    "fields": {
+      "utilizador": 3,
+      "pedido": 3,
+      "data": "2026-10-21T09:05:00Z"
+    }
+  },
+  {
+    "model": "priorizacao.voto",
+    "fields": {
+      "utilizador": 2,
+      "pedido": 5,
+      "data": "2026-10-23T09:00:00Z"
+    }
+  },
+  {
+    "model": "backlog.sprint",
+    "pk": 1,
+    "fields": {
+      "equipa": 1,
+      "numero": 1,
+      "objetivo": "Relatórios agendados prontos para a beta",
+      "data_inicio": "2026-11-16",
+      "data_fim": "2026-11-27"
+    }
+  },
+  {
+    "model": "requisitos.userstory",
+    "pk": 1,
+    "fields": {
+      "pedido": 5,
+      "sprint": 1,
+      "responsavel": 5,
+      "descricao": "Como gestora, eu preciso de agendar o envio semanal de um relatório, para que a direção o receba sem eu ter de me lembrar.",
+      "story_points": 5,
+      "ordem_backlog": 1,
+      "estado": "A_FAZER",
+      "gerada_por_ia": false
+    }
+  },
+  {
+    "model": "requisitos.criterioaceitacao",
+    "pk": 1,
+    "fields": {
+      "user_story": 1,
+      "dado": "que tenho um relatório guardado",
+      "quando": "escolho o dia da semana e a hora do envio",
+      "entao": "o relatório é enviado por e-mail nesse dia, todas as semanas"
+    }
+  },
+  {
+    "model": "requisitos.userstory",
+    "pk": 2,
+    "fields": {
+      "pedido": 5,
+      "descricao": "Como gestora, eu preciso de escolher quem recebe o relatório agendado, para que chegue às pessoas certas.",
+      "story_points": 3,
+      "ordem_backlog": 2,
+      "estado": "A_FAZER",
+      "gerada_por_ia": false
+    }
+  },
+  {
+    "model": "requisitos.criterioaceitacao",
+    "pk": 2,
+    "fields": {
+      "user_story": 2,
+      "dado": "que estou a agendar um relatório",
+      "quando": "acrescento endereços de e-mail",
+      "entao": "todos os endereços recebem o relatório"
+    }
+  },
+  {
+    "model": "requisitos.userstory",
+    "pk": 3,
+    "fields": {
+      "pedido": 5,
+      "descricao": "Como gestora, eu preciso de pausar um agendamento, para que não sejam enviados relatórios nas férias.",
+      "ordem_backlog": 3,
+      "estado": "A_FAZER",
+      "gerada_por_ia": false
+    }
+  }
 ]

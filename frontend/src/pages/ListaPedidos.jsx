@@ -6,7 +6,7 @@ import { Avatar, BotaoVoto, Erro, Estado, Pagina } from '../components.jsx'
 import { codigoPedido, tempoRelativo } from '../formatos.js'
 
 const POR_PAGINA = 5
-const ESTADOS = { SUBMETIDO: 'Submetido', EM_TRIAGEM: 'Em triagem', APROVADO: 'Aprovado', REJEITADO: 'Rejeitado' }
+const ESTADOS = { SUBMETIDO: 'Submetido', EM_TRIAGEM: 'Em triagem', APROVADO: 'Aprovado', REJEITADO: 'Rejeitado', PLANEADO: 'Planeado', EM_DESENVOLVIMENTO: 'Em desenvolvimento', LANCADO: 'Lançado' }
 const ORDENS = {
   votos: ['Mais votados', (a, b) => b.total_votos - a.total_votos],
   recentes: ['Mais recentes', (a, b) => new Date(b.data_submissao) - new Date(a.data_submissao)],

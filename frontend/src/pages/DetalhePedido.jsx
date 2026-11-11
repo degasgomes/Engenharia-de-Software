@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import * as api from '../api.js'
 import { useSessao } from '../sessao.jsx'
 import Estimativa from '../Estimativa.jsx'
 import { BotaoVoto, Erro, Estado, Pagina } from '../components.jsx'
-import { codigoPedido, NIVEL, score, tempoRelativo } from '../formatos.js'
+import { codigoPedido, codigoStory, dataCurta, NIVEL, score, tempoRelativo } from '../formatos.js'
 
 // Diagrama de Estados 1: o Gestor só decide depois da triagem.
 const EM_AVALIACAO = ['EM_TRIAGEM']
@@ -26,7 +26,7 @@ function Detalhe({ nome, children }) {
 export default function DetalhePedido() {
   const { id } = useParams()
   const { state } = useLocation()
-  const { eGestor } = useSessao()
+  const { eGestor, eInterno } = useSessao()
   const [pedido, setPedido] = useState(null)
   const [erro, setErro] = useState(null)
   const [ocupado, setOcupado] = useState(false)
@@ -152,10 +152,23 @@ export default function DetalhePedido() {
                 <>
                   <div className="rastreabilidade">
                     <span className="no">{codigoPedido(pedido.id)}</span>→
-                    <span className="no pendente">User story</span>→
-                    <span className="no pendente">Tarefa / PR</span>
+                    <span className={pedido.user_stories.length ? 'no' : 'no pendente'}>
+                      {pedido.user_stories.length || 'Sem'} User {pedido.user_stories.length === 1 ? 'Story' : 'Stories'}
+                    </span>→
+                    <span className={pedido.release_nome ? 'no' : 'no pendente'}>
+                      {pedido.release_nome ? `Release ${pedido.release_nome}` : 'Sem release'}
+                    </span>
                   </div>
-                  <p className="info">As User Stories e a ligação ao GitHub entram no Sprint 4.</p>
+                  <ul className="criterios">
+                    {pedido.user_stories.map((s) => (
+                      <li key={s.id}>
+                        <span><span className="suave codigo">{codigoStory(s.id)}</span> {s.descricao}</span>
+                        <span className="chip">{s.estado}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {eInterno && <p><Link to="/user-stories">Ver o Product Backlog →</Link></p>}
+                  <p className="suave nota">A ligação aos commits e pull requests do GitHub entra no Sprint 5.</p>
                 </>
               )}
             </div>
@@ -174,6 +187,8 @@ export default function DetalhePedido() {
               <Detalhe nome="Votos">{pedido.total_votos}</Detalhe>
               <Detalhe nome="Autor">{pedido.autor}</Detalhe>
               <Detalhe nome="Submetido">{tempoRelativo(pedido.data_submissao)}</Detalhe>
+              {pedido.release_nome && <Detalhe nome="Release"><Link to="/roadmap">{pedido.release_nome}</Link></Detalhe>}
+              {pedido.data_lancamento && <Detalhe nome="Lançado">{dataCurta(pedido.data_lancamento)}</Detalhe>}
             </dl>
           </section>
           {podeDecidir && <Estimativa key={pedido.id} pedido={pedido} aoGuardar={setPedido} />}

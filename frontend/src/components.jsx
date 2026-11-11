@@ -1,12 +1,17 @@
+import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useSessao } from './sessao.jsx'
 import { iniciais } from './formatos.js'
+import { guardarTema, lerTema, outroTema } from './tema.js'
 
 const CLASSE_ESTADO = {
   SUBMETIDO: 'azul',
   EM_TRIAGEM: 'amarelo',
   APROVADO: 'verde',
   REJEITADO: 'vermelho',
+  PLANEADO: 'azul',
+  EM_DESENVOLVIMENTO: 'amarelo',
+  LANCADO: 'verde',
 }
 
 export function Avatar({ nome }) {
@@ -43,6 +48,24 @@ export function Erro({ erro }) {
   return erro ? <p className="erro" role="alert">{erro.message}</p> : null
 }
 
+export function BotaoTema() {
+  const [tema, setTema] = useState(lerTema)
+  const seguinte = outroTema(tema)
+  return (
+    <button
+      className="botao-tema"
+      onClick={() => {
+        guardarTema(seguinte)
+        setTema(seguinte)
+      }}
+      aria-label={`Mudar para o modo ${seguinte}`}
+      title={`Mudar para o modo ${seguinte}`}
+    >
+      {tema === 'escuro' ? '☀️' : '🌙'}
+    </button>
+  )
+}
+
 export function Pagina({ titulo, children }) {
   const navegar = useNavigate()
   const [params] = useSearchParams()
@@ -63,6 +86,7 @@ export function Pagina({ titulo, children }) {
         </form>
         <button className="primario" onClick={() => navegar('/pedidos/novo')}>+ Novo pedido</button>
         <div className="conta">
+          <BotaoTema />
           <Avatar nome={utilizador.nome} />
           <button className="ligacao" onClick={sair}>Sair</button>
         </div>
@@ -70,4 +94,17 @@ export function Pagina({ titulo, children }) {
       <div className="conteudo">{children}</div>
     </div>
   )
+}
+
+const CLASSE_ESTADO_STORY = { A_FAZER: 'cinza', EM_PROGRESSO: 'amarelo', EM_REVISAO: 'azul', CONCLUIDO: 'verde' }
+
+export function EstadoStory({ story }) {
+  return <span className={`pill pill-${CLASSE_ESTADO_STORY[story.estado]}`}>{story.estado_display}</span>
+}
+
+// Definition of Ready: a story só entra num Sprint com pelo menos um critério de aceitação.
+export function Pronta({ story }) {
+  return story.pronta
+    ? <span className="chip chip-verde" title="Cumpre a Definition of Ready">✓ Pronta</span>
+    : <span className="chip chip-aviso" title="Falta pelo menos um critério de aceitação">Sem critérios</span>
 }
