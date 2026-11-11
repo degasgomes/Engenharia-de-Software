@@ -1,13 +1,18 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import * as api from '../api.js'
 import { usePedidos } from '../usePedidos.js'
 import { Erro, Estado, Pagina } from '../components.jsx'
-import { codigoPedido } from '../formatos.js'
+import { codigoPedido, dataCurta } from '../formatos.js'
 
+// Um pedido passa de Submetido a Em Triagem logo na submissão, por isso Submetido não tem barra.
 const ESTADOS = [
-  ['SUBMETIDO', 'Submetido'],
   ['EM_TRIAGEM', 'Em triagem'],
   ['APROVADO', 'Aprovado'],
   ['REJEITADO', 'Rejeitado'],
+  ['PLANEADO', 'Planeado'],
+  ['EM_DESENVOLVIMENTO', 'Em desenv.'],
+  ['LANCADO', 'Lançado'],
 ]
 
 function Indicador({ titulo, valor, nota }) {
@@ -22,6 +27,12 @@ function Indicador({ titulo, valor, nota }) {
 
 export default function Dashboard() {
   const { pedidos, erro } = usePedidos()
+  const [releases, setReleases] = useState([])
+
+  useEffect(() => {
+    api.obterRoadmap().then(setReleases).catch(() => {})
+  }, [])
+
   if (!pedidos) return <Pagina titulo="Dashboard">{erro ? <Erro erro={erro} /> : <p className="info">A carregar…</p>}</Pagina>
 
   const contar = (estado) => pedidos.filter((p) => p.estado === estado).length
@@ -29,7 +40,10 @@ export default function Dashboard() {
   const novos = pedidos.filter((p) => new Date(p.data_submissao) > semanaPassada).length
   const porEstado = ESTADOS.map(([estado, nome]) => ({ nome, total: contar(estado) }))
   const maximo = Math.max(1, ...porEstado.map((e) => e.total))
-  const maisVotados = [...pedidos].sort((a, b) => b.total_votos - a.total_votos).slice(0, 4)
+  // Um pedido rejeitado já não está em jogo, por mais votos que tenha.
+  const maisVotados = pedidos
+    .filter((p) => p.estado !== 'REJEITADO')
+    .sort((a, b) => b.total_votos - a.total_votos).slice(0, 4)
   const maxVotos = Math.max(1, ...maisVotados.map((p) => p.total_votos))
   const recentes = [...pedidos]
     .sort((a, b) => new Date(b.data_submissao) - new Date(a.data_submissao))
@@ -68,6 +82,38 @@ export default function Dashboard() {
           ))}
         </section>
       </div>
+
+      {releases.length > 0 && (
+        <section className="cartao">
+          <div className="cabecalho-cartao">
+            <h2>Progresso do roadmap</h2>
+            <Link to="/roadmap" className="ligacao-suave">Ver roadmap →</Link>
+          </div>
+          {releases.map((r) => (
+            <div key={r.id} className="progresso">
+              <div className="linha-progresso">
+                <strong>{r.nome}</strong>
+                <span className="suave">
+                  {r.pedidos.length} {r.pedidos.length === 1 ? 'pedido' : 'pedidos'} ·{' '}
+                  {r.publicada ? `publicada a ${dataCurta(r.data_publicacao)}` : `prevista para ${dataCurta(r.data_prevista)}`}
+                </span>
+                <span>{r.progresso}%</span>
+              </div>
+              <div
+                className="trilho"
+                role="progressbar"
+                aria-label={`Progresso da ${r.nome}`}
+                aria-valuenow={r.progresso}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              >
+                <div style={{ width: `${r.progresso}%` }} />
+              </div>
+            </div>
+          ))}
+          <p className="suave nota-curta">Percentagem de User Stories concluídas nos pedidos de cada release.</p>
+        </section>
+      )}
 
       <section className="cartao">
         <div className="cabecalho-cartao">

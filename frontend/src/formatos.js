@@ -24,3 +24,8 @@ export function iniciais(nome = '') {
     .map((parte) => parte[0].toUpperCase())
     .join('')
 }
+
+export const dataCurta = (data) =>
+  data ? new Date(data).toLocaleDateString('pt-PT', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'
+
+export const codigoStory = (id) => `US-${String(id).padStart(3, '0')}`

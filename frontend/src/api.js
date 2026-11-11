@@ -116,3 +116,56 @@ export const avaliarPedido = (id, esforco, impacto) =>
 export const aprovarPedido = (id) => pedir(`/pedidos/${id}/aprovar`, { method: 'POST' })
 export const rejeitarPedido = (id, justificacao) =>
   pedir(`/pedidos/${id}/rejeitar`, { method: 'POST', json: { justificacao } })
+
+// --- User Stories e Product Backlog (Sprint 4) ---------------------------------
+
+export const listarUserStories = () => pedir('/user-stories')
+export const criarUserStory = (descricao) => pedir('/user-stories', { method: 'POST', json: { descricao } })
+export const editarUserStory = (id, dados) => pedir(`/user-stories/${id}`, { method: 'PATCH', json: dados })
+export const apagarUserStory = (id) => pedir(`/user-stories/${id}`, { method: 'DELETE' })
+export const acrescentarCriterio = (id, criterio) =>
+  pedir(`/user-stories/${id}/criterios`, { method: 'POST', json: criterio })
+export const retirarCriterio = (id, criterioId) =>
+  pedir(`/user-stories/${id}/criterios/${criterioId}`, { method: 'DELETE' })
+export const mudarEstadoStory = (id, estado) =>
+  pedir(`/user-stories/${id}/estado`, { method: 'POST', json: { estado } })
+export const moverNoBacklog = (id, direcao) =>
+  pedir(`/user-stories/${id}/mover`, { method: 'POST', json: { direcao } })
+// US 1.3: a IA escreve o esboço; o Gestor de Produto edita-o ou descarta-o.
+export const gerarUserStory = (pedidoId) => pedir(`/pedidos/${pedidoId}/user-stories`, { method: 'POST' })
+
+// --- Sprints -------------------------------------------------------------------
+
+export const listarSprints = () => pedir('/sprints')
+export const criarSprint = (dados) => pedir('/sprints', { method: 'POST', json: dados })
+// Responde 422 se a story não cumprir a Definition of Ready.
+export const moverParaSprint = (sprintId, storyId) =>
+  pedir(`/sprints/${sprintId}/user-stories`, { method: 'POST', json: { user_story: storyId } })
+export const retirarDoSprint = (sprintId, storyId) =>
+  pedir(`/sprints/${sprintId}/user-stories/${storyId}`, { method: 'DELETE' })
+
+// --- Equipas -------------------------------------------------------------------
+
+export const listarEquipas = () => pedir('/equipas')
+export const criarEquipa = (nome) => pedir('/equipas', { method: 'POST', json: { nome } })
+export const juntarMembro = (equipaId, utilizador) =>
+  pedir(`/equipas/${equipaId}/membros`, { method: 'POST', json: { utilizador } })
+export const retirarMembro = (equipaId, utilizadorId) =>
+  pedir(`/equipas/${equipaId}/membros/${utilizadorId}`, { method: 'DELETE' })
+export const listarUtilizadoresInternos = () => pedir('/utilizadores')
+
+// --- Roadmap -------------------------------------------------------------------
+
+export const obterRoadmap = () => pedir('/roadmap')
+export const criarRelease = (dados) => pedir('/releases', { method: 'POST', json: dados })
+export const associarPedido = (releaseId, pedido) =>
+  pedir(`/releases/${releaseId}/pedidos`, { method: 'POST', json: { pedido } })
+export const criarMilestone = (releaseId, dados) =>
+  pedir(`/releases/${releaseId}/milestones`, { method: 'POST', json: dados })
+export const publicarRelease = (releaseId) => pedir(`/releases/${releaseId}/publicar`, { method: 'POST' })
+
+// --- Notificações --------------------------------------------------------------
+
+export const listarNotificacoes = () => pedir('/notificacoes')
+export const marcarLida = (id) => pedir(`/notificacoes/${id}`, { method: 'PATCH', json: { lida: true } })
+export const marcarTodasLidas = () => pedir('/notificacoes/marcar-todas', { method: 'POST' })

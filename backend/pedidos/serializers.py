@@ -28,6 +28,15 @@ class PedidoSerializer(serializers.ModelSerializer):
     votado = serializers.BooleanField(read_only=True)
     aceita_votos = serializers.BooleanField(read_only=True)
     anexos = AnexoSerializer(many=True, read_only=True)
+    release_nome = serializers.CharField(source="release.nome", read_only=True, default=None)
+    user_stories = serializers.SerializerMethodField()
+
+    def get_user_stories(self, pedido) -> list:
+        # Rastreabilidade: pedido → User Stories (US 3.1).
+        return [
+            {"id": s.id, "descricao": s.descricao, "estado": s.get_estado_display()}
+            for s in pedido.user_stories.all()
+        ]
 
     class Meta:
         model = Pedido
@@ -49,6 +58,10 @@ class PedidoSerializer(serializers.ModelSerializer):
             "votado",
             "aceita_votos",
             "anexos",
+            "release",
+            "release_nome",
+            "data_lancamento",
+            "user_stories",
         ]
         read_only_fields = fields
 
