@@ -21,6 +21,12 @@ INSTALLED_APPS = [
     "contas",
     "pedidos",
     "priorizacao",
+    # Sprint 4
+    "requisitos",
+    "backlog",
+    "roadmap",
+    "colaboracao",
+    "integracao_ia",
 ]
 
 MIDDLEWARE = [
@@ -128,3 +134,21 @@ EMAIL_BACKEND = os.environ.get(
 DEFAULT_FROM_EMAIL = os.environ.get(
     "DJANGO_DEFAULT_FROM_EMAIL", "FeatureFlow <nao-responder@featureflow.local>"
 )
+
+# ADR-004: o e-mail e as outras tarefas lentas saem do pedido HTTP e vão para o Worker (Celery),
+# com o Redis como fila. Sem REDIS_URL (testes, execução local sem Docker) as tarefas correm
+# logo, no mesmo processo.
+REDIS_URL = os.environ.get("REDIS_URL", "")
+CELERY_BROKER_URL = REDIS_URL or "memory://"
+CELERY_TASK_ALWAYS_EAGER = not REDIS_URL
+CELERY_TASK_EAGER_PROPAGATES = True
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_TASK_IGNORE_RESULT = True
+
+# ADR-009: fornecedor de LLM. A chave fica no .env, fora do Git. Sem chave usa-se o adaptador
+# falso, que devolve um esboço fixo e não faz chamadas à rede (testes, CI e demonstrações).
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+IA_ADAPTADOR = os.environ.get("IA_ADAPTADOR") or ("anthropic" if ANTHROPIC_API_KEY else "falso")
+IA_MODELO = os.environ.get("IA_MODELO", "claude-opus-5-5")
+IA_TIMEOUT_SEGUNDOS = float(os.environ.get("IA_TIMEOUT_SEGUNDOS", "20"))
+IA_TENTATIVAS = 2

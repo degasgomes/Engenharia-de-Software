@@ -174,5 +174,10 @@ def test_dados_de_exemplo_carregam_com_votos(db):
     from pedidos.models import Pedido
 
     call_command("loaddata", "dados_exemplo", verbosity=0)
-    assert Voto.objects.count() == 4
+    assert Voto.objects.count() == 5
     assert Pedido.objects.get(pk=3).total_votos() == 2
+    # Sprint 4: equipa, sprint, release e User Stories para a demonstração
+    planeado = Pedido.objects.get(pk=5)
+    assert planeado.release.nome == "v1.1"
+    assert planeado.user_stories.count() == 3
+    assert planeado.user_stories.filter(sprint__numero=1).get().esta_pronta()

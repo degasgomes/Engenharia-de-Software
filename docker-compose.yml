@@ -12,19 +12,48 @@ services:
       interval: 3s
       retries: 20
 
+  # Fila do Worker (ADR-004)
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      retries: 20
+
   backend:
     build: ./backend
-    environment:
+    environment: &ambiente-backend
       POSTGRES_DB: featureflow
       POSTGRES_USER: featureflow
       POSTGRES_PASSWORD: featureflow
       POSTGRES_HOST: db
+      REDIS_URL: redis://redis:6379/0
+      # ADR-009: a chave do LLM vem do ficheiro .env (fora do Git). Sem chave, usa-se o
+      # adaptador falso e não há chamadas à rede.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      IA_ADAPTADOR: ${IA_ADAPTADOR:-}
     volumes:
       - ./backend:/app
     ports:
       - "8000:8000"
     depends_on:
       db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # O mesmo código do back-end, a consumir a fila: envia os e-mails (consola em desenvolvimento).
+  worker:
+    build: ./backend
+    entrypoint: []
+    command: celery -A config worker -l info
+    environment: *ambiente-backend
+    volumes:
+      - ./backend:/app
+    depends_on:
+      backend:
+        condition: service_started
+      redis:
         condition: service_healthy
 
   frontend:

@@ -45,7 +45,9 @@ class Pedido(models.Model):
     categoria = models.ForeignKey(
         Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name="pedidos"
     )
-    # release_id entra com o módulo roadmap (Sprint 4).
+    release = models.ForeignKey(
+        "roadmap.Release", on_delete=models.SET_NULL, null=True, blank=True, related_name="pedidos"
+    )
     titulo = models.CharField(max_length=200)
     problema = models.TextField()
     estado = models.CharField(
@@ -91,6 +93,33 @@ class Pedido(models.Model):
         self.estado = EstadoPedido.REJEITADO
         self.justificacao_rejeicao = justificacao.strip()
         self.save(update_fields=["estado", "justificacao_rejeicao"])
+
+    def planear(self, release):
+        """Aprovado → Planeado, ao ser associado a uma Release (Diagrama de Estados 1)."""
+        if self.estado != EstadoPedido.APROVADO:
+            raise TransicaoInvalida(
+                f"Só um pedido Aprovado entra numa Release; este está {self.get_estado_display()}."
+            )
+        self.release = release
+        self.estado = EstadoPedido.PLANEADO
+        self.save(update_fields=["estado", "release"])
+
+    def iniciar_desenvolvimento(self):
+        """Planeado → Em Desenvolvimento, quando a 1.ª User Story entra em Em Progresso."""
+        if self.estado != EstadoPedido.PLANEADO:
+            raise TransicaoInvalida(
+                f"Um pedido {self.get_estado_display()} não pode passar a Em Desenvolvimento."
+            )
+        self.estado = EstadoPedido.EM_DESENVOLVIMENTO
+        self.save(update_fields=["estado"])
+
+    def lancar(self, data):
+        """Planeado ou Em Desenvolvimento → Lançado, quando a Release é publicada."""
+        if self.estado not in (EstadoPedido.PLANEADO, EstadoPedido.EM_DESENVOLVIMENTO):
+            raise TransicaoInvalida(f"Um pedido {self.get_estado_display()} não pode ser lançado.")
+        self.estado = EstadoPedido.LANCADO
+        self.data_lancamento = data
+        self.save(update_fields=["estado", "data_lancamento"])
 
     @property
     def aceita_votos(self):

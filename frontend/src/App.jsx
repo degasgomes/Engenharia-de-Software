@@ -1,4 +1,6 @@
-import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import * as api from './api.js'
 import { useSessao } from './sessao.jsx'
 import Entrar from './pages/Entrar.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -6,21 +8,29 @@ import ListaPedidos from './pages/ListaPedidos.jsx'
 import SubmeterPedido from './pages/SubmeterPedido.jsx'
 import DetalhePedido from './pages/DetalhePedido.jsx'
 import Priorizacao from './pages/Priorizacao.jsx'
-import EmBreve from './pages/EmBreve.jsx'
+import UserStories from './pages/UserStories.jsx'
+import BacklogSprint from './pages/BacklogSprint.jsx'
+import Roadmap from './pages/Roadmap.jsx'
+import Equipas from './pages/Equipas.jsx'
+import Notificacoes from './pages/Notificacoes.jsx'
 
-const NOMES_PERFIL = { CLIENTE: 'Cliente', GESTOR_PRODUTO: 'Gestor de Produto' }
-
-// Os ecrãs dos wireframes que dependem de módulos dos Sprints 4 e 5.
-const FUTUROS = [
-  { caminho: '/backlog', titulo: 'Backlog e Sprint', sprint: 4 },
-  { caminho: '/roadmap', titulo: 'Roadmap', sprint: 4 },
-  { caminho: '/user-stories', titulo: 'User Stories', sprint: 4 },
-  { caminho: '/equipas', titulo: 'Equipas', sprint: 5 },
-  { caminho: '/notificacoes', titulo: 'Notificações', sprint: 4 },
-]
+const NOMES_PERFIL = {
+  CLIENTE: 'Cliente',
+  GESTOR_PRODUTO: 'Gestor de Produto',
+  GESTOR_PROJETO: 'Gestor de Projeto',
+  PROGRAMADOR: 'Programador',
+}
 
 function MenuLateral() {
-  const { utilizador } = useSessao()
+  const { utilizador, eInterno } = useSessao()
+  const { pathname } = useLocation()
+  const [porLer, setPorLer] = useState(0)
+
+  // Atualiza o contador ao mudar de ecrã (por exemplo depois de ler as notificações).
+  useEffect(() => {
+    api.listarNotificacoes().then((lista) => setPorLer(lista.filter((n) => !n.lida).length)).catch(() => {})
+  }, [pathname])
+
   return (
     <aside className="lateral">
       <NavLink to="/" className="marca">FeatureFlow</NavLink>
@@ -28,9 +38,13 @@ function MenuLateral() {
         <NavLink to="/" end>Dashboard</NavLink>
         <NavLink to="/pedidos">Pedidos</NavLink>
         <NavLink to="/priorizacao">Priorização</NavLink>
-        {FUTUROS.map((f) => (
-          <NavLink key={f.caminho} to={f.caminho} className="futuro">{f.titulo}</NavLink>
-        ))}
+        {eInterno && <NavLink to="/user-stories">User Stories</NavLink>}
+        {eInterno && <NavLink to="/backlog">Backlog e Sprint</NavLink>}
+        <NavLink to="/roadmap">Roadmap</NavLink>
+        {eInterno && <NavLink to="/equipas">Equipas</NavLink>}
+        <NavLink to="/notificacoes">
+          Notificações{porLer > 0 && <span className="contador" aria-label={`${porLer} por ler`}>{porLer}</span>}
+        </NavLink>
       </nav>
       <div className="perfil">
         <strong>{utilizador.nome}</strong>
@@ -41,7 +55,7 @@ function MenuLateral() {
 }
 
 export default function App() {
-  const { utilizador, aCarregar } = useSessao()
+  const { utilizador, aCarregar, eInterno } = useSessao()
 
   if (aCarregar) return <p className="info centrado">A carregar…</p>
   if (!utilizador) {
@@ -62,9 +76,11 @@ export default function App() {
         <Route path="/pedidos/novo" element={<SubmeterPedido />} />
         <Route path="/pedidos/:id" element={<DetalhePedido />} />
         <Route path="/priorizacao" element={<Priorizacao />} />
-        {FUTUROS.map((f) => (
-          <Route key={f.caminho} path={f.caminho} element={<EmBreve titulo={f.titulo} sprint={f.sprint} />} />
-        ))}
+        <Route path="/roadmap" element={<Roadmap />} />
+        <Route path="/notificacoes" element={<Notificacoes />} />
+        {eInterno && <Route path="/user-stories" element={<UserStories />} />}
+        {eInterno && <Route path="/backlog" element={<BacklogSprint />} />}
+        {eInterno && <Route path="/equipas" element={<Equipas />} />}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

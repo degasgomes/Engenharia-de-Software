@@ -8,3 +8,12 @@ extend-exclude = ["*/migrations/*"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W"]
+
+[tool.coverage.run]
+source = ["."]
+omit = ["tests/*", "*/migrations/*", "manage.py", "config/wsgi.py"]
+
+[tool.coverage.report]
+# RNF-09: a CI falha abaixo de 70% (pytest --cov --cov-fail-under=70)
+show_missing = true
+skip_covered = true

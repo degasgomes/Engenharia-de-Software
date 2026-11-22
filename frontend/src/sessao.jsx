@@ -20,6 +20,10 @@ export function SessaoProvider({ children }) {
     utilizador,
     aCarregar,
     eGestor: utilizador?.perfil === 'GESTOR_PRODUTO',
+    // Planeamento (Sprints, Equipas, Releases): Gestor de Produto ou de Projeto.
+    podePlanear: ['GESTOR_PRODUTO', 'GESTOR_PROJETO'].includes(utilizador?.perfil),
+    // Os Clientes não veem o backlog nem as equipas.
+    eInterno: Boolean(utilizador) && utilizador.perfil !== 'CLIENTE',
     entrar: async (email, password) => setUtilizador(await api.entrar(email, password)),
     registar: async (dados) => setUtilizador(await api.registar(dados)),
     sair: () => {

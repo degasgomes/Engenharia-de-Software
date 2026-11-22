@@ -1,7 +1,7 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
-from .models import Utilizador
+from .models import Equipa, Perfil, Utilizador
 
 
 class UtilizadorSerializer(serializers.ModelSerializer):
@@ -22,3 +22,18 @@ class RegistoSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Utilizador.objects.create_user(**validated_data)
+
+
+class EquipaSerializer(serializers.ModelSerializer):
+    membros = UtilizadorSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Equipa
+        fields = ["id", "nome", "membros"]
+
+
+class MembroSerializer(serializers.Serializer):
+    # Os Clientes não fazem parte de equipas de desenvolvimento.
+    utilizador = serializers.PrimaryKeyRelatedField(
+        queryset=Utilizador.objects.exclude(perfil=Perfil.CLIENTE)
+    )

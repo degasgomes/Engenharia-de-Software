@@ -51,3 +51,19 @@ class Utilizador(AbstractBaseUser, PermissionsMixin):
     @property
     def e_gestor_produto(self):
         return self.perfil == Perfil.GESTOR_PRODUTO
+
+
+class Equipa(models.Model):
+    """EDS-13: uma equipa de desenvolvimento, dona dos seus Sprints."""
+
+    nome = models.CharField(max_length=100, unique=True)
+    membros = models.ManyToManyField(
+        Utilizador, related_name="equipas", blank=True, db_table="equipa_membro"
+    )
+
+    class Meta:
+        db_table = "equipa"
+        ordering = ["nome"]
+
+    def __str__(self):
+        return self.nome

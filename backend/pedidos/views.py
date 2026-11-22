@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from contas.permissions import EGestorProduto
 from priorizacao import services as priorizacao
 from priorizacao.models import Voto
+from requisitos import services as requisitos
+from requisitos.serializers import UserStorySerializer
 
 from . import services
 from .models import Categoria, Pedido, TransicaoInvalida
@@ -35,8 +37,8 @@ class PedidoViewSet(
             pedido=OuterRef("pk"), utilizador=self.request.user
         )
         return (
-            Pedido.objects.select_related("autor", "categoria")
-            .prefetch_related("anexos")
+            Pedido.objects.select_related("autor", "categoria", "release")
+            .prefetch_related("anexos", "user_stories")
             .annotate(
                 total_votos=Count("votos__utilizador", distinct=True),
                 votado=Exists(votos_do_utilizador),
@@ -45,7 +47,7 @@ class PedidoViewSet(
         )
 
     def get_permissions(self):
-        if self.action in ("partial_update", "aprovar", "rejeitar"):
+        if self.action in ("partial_update", "aprovar", "rejeitar", "user_stories"):
             return [EGestorProduto()]
         return super().get_permissions()
 
@@ -95,6 +97,16 @@ class PedidoViewSet(
         except TransicaoInvalida as erro:
             raise ValidationError({"detail": str(erro)}) from erro
         return self._resposta(pedido)
+
+    @action(detail=True, methods=["post"], url_path="user-stories")
+    def user_stories(self, request, pk=None):
+        """US 1.3: gera o esboço de uma User Story com IA a partir de um pedido aprovado."""
+        pedido = self.get_object()
+        try:
+            story = requisitos.gerar_user_story(pedido)
+        except requisitos.PedidoNaoAprovado as erro:
+            raise ValidationError({"detail": str(erro)}) from erro
+        return Response(UserStorySerializer(story).data, status.HTTP_201_CREATED)
 
     @action(detail=True, methods=["post", "delete"])
     def votos(self, request, pk=None):
